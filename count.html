@@ -1,0 +1,205 @@
+<!DOCTYPE html> <html lang="en">     
+<head>        
+	<meta charset="utf-8">        
+	<title>Counting machine</title>   
+	<style>
+
+	</style>  
+<link rel="stylesheet" type="text/css" href="countstyle.css">
+</head>   
+<body>    
+
+<div id="metronome"></div>
+<button id="base8" onclick="timestamp()"></button>
+<button id="beats" onclick="counttime()"></button>
+<button id="submit" onclick="countthem()">Show counts </button>
+
+<h3 id="count">Beat</h3>
+
+<br/>
+<h3 id="beatcounter"></h3>
+<!-- <table>
+<tr>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+</tr>
+</table> -->
+
+<table id="subdivide">
+</table>
+
+<script>
+var count=-1;
+var beatArray=[];
+
+var countArray=[];
+
+//when second button is pushed, populate countArray
+function counttime(){
+	countArray.push(Date.now());
+	console.log(countArray);
+}
+
+//calculate beats in counttime by finding time differences and storing in noteArray
+function countthem(){
+	console.log("==============")
+	if (countArray.length<2){
+		console.log("not enough beats");
+	}
+	else{
+	beats=countArray;
+	countArray=[];
+	var previous= beats.slice(0,1);
+	var noteArray=[];
+	beats.forEach(function(el){
+		diff=el-previous;
+		
+		number=diff/avg;
+		//round to nearest .25
+		note = parseFloat((Math.round(number * 4) / 4).toFixed(2));
+
+		noteArray.push(note);
+		previous=el;
+		console.log(noteArray);
+	});
+	assignBeats(noteArray);
+	}
+}
+
+
+var map=["num", "e", "and", "a"]
+function assignBeats(beats){
+	var names=[];
+	var phrase=[];
+	var num=1;
+	var index=0;
+	var eight=false
+	beats.forEach(function(el){
+		if (el==0){
+			phrase.push(num);	
+		}
+		else{
+			div=el/.25;
+			//each multiple of .25 is a quarter of a beat
+			index=(index+div)%4;
+			//add number of full counts that pass
+			num=( (num+ el-1)%8)+1;
+
+			console.log(num, el);
+
+			if( (num+el)/8 >=1){
+				num= addName(index, phrase, num);
+
+				names.push(phrase);
+				console.log("in", names, num,el, phrase)
+				phrase=[]
+			}
+			else{
+			num= addName(index, phrase, num);
+		}
+		}
+	})
+	names.push(phrase)
+	console.log(names);
+
+	showBeatTable(names);
+}
+
+function addName(index, phrase, num){
+	if (map[index]=="num"){
+		phrase.push(Math.floor(num));
+		// num= (num%8)+1;
+	}
+	else{
+		phrase.push(Math.floor(num) + map[index]);
+	}
+	return num
+}
+
+function newRow(str, numRows){
+	for (k=1; k<=numRows; k++){
+		 str+="<tr>";
+		for(i=1; i<=8;i++){
+			id=+ k.toString()+i.toString() ;
+			str+= "<td class=\"number\" id=\""+ id+ "\">" + i.toString() + "</td> <td id=\""+id+"e\"> e</td>  <td id=\""+id+"and\">and</td>  <td style=\"border-right:3px solid black;\" id=\""+id+"a\">a</td>";
+		}
+		str+="</tr>";
+	}
+	return str;
+}
+
+// document.getElementById("subdivide").innerHTML=newRow("1", " ");
+
+
+function showBeatTable(names){
+	document.getElementById("subdivide").innerHTML=newRow("", names.length)
+	count=1;
+
+	names.forEach(function(el){
+		console.log(el);
+		el.forEach(function(val){
+			document.getElementById(count.toString()+val.toString()).style="background-color:red;";
+
+		})
+		count+=1
+
+	});
+
+
+}
+
+//record base beat timestamps
+function timestamp(){
+	console.log(Date.now());
+	beatArray.push(Date.now());
+	count+=1;
+	// console.log(count%8+1);
+	document.getElementById("count").innerHTML=count%8+1;
+	// console.log(beatArray)
+	if(beatArray.length==8){
+		basebeat(beatArray);
+		beatArray=[];
+	}
+}
+
+//calculate avg time between each beat in the base beat, then display base beat
+function basebeat(beats){
+	var sum=0
+	// initial has first element, beatArray has elements 1:7
+	var previous= beats.splice(0,1);
+	console.log(beats);
+	beats.forEach(function(el){
+		diff=el-previous;
+		sum+=diff;
+		previous=el;
+		console.log(diff);
+	});
+	avg=sum/7.0;
+	console.log(avg);
+	var dur= "animation-duration:"+ (avg/1000).toString() +"s";
+	console.log(dur)
+	document.getElementById("metronome").style= dur;
+	// document.getElementById("metronome").style= "width:200px";
+	setInterval(displaybeat, avg);
+
+}
+
+var beatCount=-1;
+
+function displaybeat(){
+	beatCount+=1
+	document.getElementById("beatcounter").innerHTML=beatCount%8+1;
+
+}
+
+
+</script>
+
+</body>
+</html> 

@@ -1,0 +1,53 @@
+#base8{
+		height:100px;
+		width:100px;
+		background-color:#AABBCC;
+	}
+	#beats{
+		height:100px;
+		width:100px;
+		background-color:#AACCCC;
+	}
+
+
+
+div {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    position: relative;
+    -webkit-animation-name: metronome; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-iteration-count: 3; /* Safari 4.0 - 8.0 */
+    animation-name: metronome;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+/* Safari 4.0 - 8.0 */
+/*@-webkit-keyframes metronome {
+    0%   {background-color:red; left:0px; top:0px;}
+    100% {background-color:white; left:100px; top:0px;}
+}*/
+
+/* Standard syntax */
+/*@keyframes metronome {
+    0%   {background-color:red; left:0px; top:0px;}
+    50%{background-color:white; }
+    100% {background-color:white; }
+}*/
+
+table, th, td{
+    padding-left:60px;
+    padding-right:60px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+#subdivide td, #subdivide th{
+    padding:11px;
+}
+
+.number{
+    font-weight:bold;
+}
